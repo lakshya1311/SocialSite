@@ -1,0 +1,19 @@
+#home-container {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#home-container #feed-posts {
+  width: 70%;
+  padding: 10px;
+}
+#home-container #user-friends {
+  width: 20%;
+  padding: 10px;
+  border-left: 1px solid gray;
+  height: 100%;
+}
+
+/*# sourceMappingURL=home.css.map */
