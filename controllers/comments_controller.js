@@ -12,6 +12,16 @@ module.exports.create = async function(req, res){
             });  
                 post.comments.push(comment);
                 post.save();
+                if(req.xhr){
+                    // if we want to populate just the name of the user (we'll not want to send the password in the API), this is how we do it!
+                    comment = await comment.populate('user', 'name').execPopulate();
+                    return res.status(200).json({
+                        data :{
+                            comment:comment
+                        },
+                        message:"Comment posted!"
+                    })
+                }
                 req.flash('success','Comment posted');
                 res.redirect('/');
             }
@@ -32,6 +42,14 @@ module.exports.destroy=async function(req,res){
                 comment.remove();
 
                 let post = await Post.findByIdAndUpdate(postId,{ $pull : {comments : req.params.id}});
+                if (req.xhr){
+                    return res.status(200).json({
+                        data: {
+                            comment_id: req.params.id
+                        },
+                        message: "Post deleted"
+                    });
+                }
                 req.flash('success','Comment deleted');
                     return res.redirect('back');
             }
