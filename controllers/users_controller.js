@@ -1,4 +1,7 @@
+const multer = require('multer');
 const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
 
 module.exports.profile = function(req, res){
@@ -68,17 +71,38 @@ module.exports.destroySession = function(req, res){
 
 //update profile details
 
-module.exports.update=function(req,res){
-    User.findByIdAndUpdate(req.params.id,{name:req.body.name ,email:req.body.email},function (err, user) {
-        if (err){
-            req.flash('error','Error in Updating Profile');
-            console.log("Error in Updating Profile " + err);
-            return;
+module.exports.update= async function(req,res){
+    if(req.user.id==req.params.id){
+        try{
+            let user = await User.findById(req.params.id);
+                // as it is a multi part form, wont be able to parse the body, hence commented the below statement
+                // User.findByIdAndUpdate(req.params.id,{name:req.body.name ,email:req.body.email});
+                User.uploadedAvatar(req,res,function(err){
+                    if(err){
+                        console.log("Multer error -----"+err);
+                    }
+                    user.name=req.body.name;
+                    user.email = req.body.email;
+
+                    if(req.file){
+                        if(user.avatar && fs.existsSync(path.join(__dirname+'/..'+user.avatar)))
+                        {
+                            fs.unlinkSync(path.join(__dirname+'/..'+user.avatar));
+                        }
+                        user.avatar = User.avatarPath+'/'+req.file.filename;
+                    }
+                    user.save();
+                    console.log("Updated User : ", user);
+                    req.flash('success','Profile Details Updated');
+                    return res.redirect('back');
+                })
+                // return res.redirect('/');
+            }
+            catch(err)
+            {
+                req.flash('error','Error in Updating Profile');
+                console.log("Error in Updating Profile " + err);
+                return;
+            }
         }
-        else{
-            req.flash('success','Profile Details Updated');
-            console.log("Updated User : ", user);
-            return res.redirect('/');
-        }
-        })
 }
