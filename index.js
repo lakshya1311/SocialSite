@@ -72,6 +72,7 @@ app.use(customMware.setFlash)
 //make the uploads path availaible to the browser, used in profile picture on profile page
 app.use('/uploads',express.static(__dirname+'/uploads'));
 // use express router
+
 app.use('/', require('./routes'));
 
 app.listen(port, function(err){

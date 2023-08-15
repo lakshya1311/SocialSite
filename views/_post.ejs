@@ -1,15 +1,15 @@
 <% for(post of posts){ %>
-                
-    <li id="post-<%=post._id%>">
+                  
+    <li id="post-<%=post._id%>" class="card-body">
         <p>
             <% if(locals.user && locals.user.id== post.user.id){%>
-                <%= post.content %>
+                <h5 class="card-title"><%= post.content %></h5>
                 <small>
                     <a class="delete-post-button" href="/posts/destroy/<%= post.id %>">X</a>
                 </small>
                 <% } %>
             <br>
-            <small>
+            <small class="card-subtitle mb-2 text-muted">
                 <%= post.user.name %>
             </small>
         </p>
@@ -25,9 +25,9 @@
 
             <div class="post-comments-list">
                 <ul id="post-comments-<%= post._id %>">
-                    <% for (comment of post.comments){%>
-                        <%- include('_comments') -%>
-                    <%} %>
+                     <% for (comment of post.comments){%>
+                    <%- include('_comments') -%>
+                <%} %>
                 </ul>
             </div>
         </div>
