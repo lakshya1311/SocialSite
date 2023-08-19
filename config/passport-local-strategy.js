@@ -8,26 +8,21 @@ const User = require('../models/user');
 // authentication using passport
 passport.use(new LocalStrategy({
         usernameField: 'email',
-        passReqToCallback:true
+        passReqToCallback: true
     },
-    function(req,email, password, done){
+    function(req, email, password, done){
         // find a user and establish the identity
-        User.find({email: email}).then((user,err)=>{
+        User.findOne({email: email}, function(err, user)  {
             if (err){
-                req.flash('error',err);
-                console.log('Error in finding user --> Passport');
+                req.flash('error', err);
                 return done(err);
             }
-            if(user){
-            if (user.length==0 || user[0].password != password){
-                console.log(user);
-                console.log(password);
-                console.log(user.password);
-                req.flash('error','Invalid Username/Password');
-                console.log('Invalid Username/Password');
+
+            if (!user || user.password != password){
+                req.flash('error', 'Invalid Username/Password');
                 return done(null, false);
             }
-        }
+
             return done(null, user);
         });
     }
@@ -37,17 +32,9 @@ passport.use(new LocalStrategy({
 
 
 // serializing the user to decide which key is to be kept in the cookies
-// passport.serializeUser(function(user, done){
-//     done(null, user.id);
-// });
-
-passport.serializeUser(function(user, done) {
-    console.log("serializing user uwu:" + JSON.stringify(user))
-    process.nextTick(function() {
-        return done(null, user[0]._id)
-    })
-})
-
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+});
 
 
 // deserializing the user from the key in the cookies
