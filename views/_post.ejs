@@ -1,9 +1,15 @@
 <% for(post of posts){ %>
                   
-    <li id="post-<%=post._id%>" class="card-body">
-        <p>
+    <li id="post-<%=post._id%>" class="card-body" style="
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: space-around;
+        justify-content: center;
+        align-items: center;">
+        <p style="display: inline-flex;">
+            <h5 class="card-title" style="display: inline-flex;"><%= post.content %></h5>
             <% if(locals.user && locals.user.id== post.user.id){%>
-                <h5 class="card-title"><%= post.content %></h5>
                 <small>
                     <a class="delete-post-button" href="/posts/destroy/<%= post.id %>">X</a>
                 </small>
@@ -23,7 +29,7 @@
 
             <% } %>
 
-            <div class="post-comments-list">
+            <div class="post-comments-list" style="display: flex;flex-direction: column;flex-wrap: wrap;align-content: space-around;justify-content: center;align-items: center;">
                 <ul id="post-comments-<%= post._id %>">
                      <% for (comment of post.comments){%>
                     <%- include('_comments') -%>
